@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lost_found_task_app/controller/form_controller.dart';
+import 'package:lost_found_task_app/controller/theme_controller.dart';
 import 'package:lost_found_task_app/view/widgets/custom_button.dart';
 import 'package:lost_found_task_app/view/widgets/custom_textfield.dart';
 import 'package:lost_found_task_app/view/widgets/image_grid.dart';
@@ -11,19 +12,28 @@ class FormScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<FormController>(builder: (controller) {
+      final ThemeController themeController = Get.find<ThemeController>();
+
       return Scaffold(
-        backgroundColor: Colors.grey[200],
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
           elevation: 1,
-          backgroundColor: Colors.grey[200],
-          title: const Text('Lost Found App'),
-          actions: <Widget>[
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          title: Text(
+            'Lost Found App',
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyLarge?.color,
+              // color: Theme.of(context).primaryColor,
+            ),
+          ),
+          actions: [
             IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('You pressed bell icon.')));
-              },
+              icon: Icon(
+                themeController.isDarkMode.value
+                    ? Icons.dark_mode
+                    : Icons.light_mode,
+              ),
+              onPressed: () => themeController.toggleTheme(),
             ),
           ],
         ),
@@ -33,10 +43,17 @@ class FormScreen extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                // height: 400,
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
                 child: Form(
                   key: controller.formKey,
                   child: Column(
@@ -46,7 +63,8 @@ class FormScreen extends StatelessWidget {
                         hintText: 'Enter your name',
                         controller: controller.nameController,
                         validator: controller.validateName,
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor:
+                            Theme.of(context).inputDecorationTheme.fillColor,
                       ),
                       CustomTextField(
                         label: 'Contact Information',
@@ -54,14 +72,16 @@ class FormScreen extends StatelessWidget {
                         controller: controller.contactController,
                         validator: controller.validateContact,
                         inputType: TextInputType.text,
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor:
+                            Theme.of(context).inputDecorationTheme.fillColor,
                       ),
                       CustomTextField(
                         label: 'Item Description',
                         hintText: 'Describe the item',
                         controller: controller.descriptionController,
                         validator: controller.validateDescription,
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor:
+                            Theme.of(context).inputDecorationTheme.fillColor,
                         maxLines: 4,
                         inputType: TextInputType.multiline,
                       ),
@@ -69,43 +89,43 @@ class FormScreen extends StatelessWidget {
                         label: 'Location',
                         hintText: 'Enter location',
                         controller: controller.locationController,
-                        // validator: controller.validateLocation,
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor:
+                            Theme.of(context).inputDecorationTheme.fillColor,
                       ),
                       CustomTextField(
                         label: 'Date',
                         hintText: 'Pick the date',
                         controller: controller.dateController,
-                        // validator: controller.validateDate,
                         isDatePicker: true,
                         onDateSelected: (date) {
                           controller.dateController.text = date;
                         },
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor:
+                            Theme.of(context).inputDecorationTheme.fillColor,
                       ),
-                      SizedBox(height: 20),
-                      // Image picker button
-
+                      const SizedBox(height: 20),
                       InkWell(
                         onTap: controller.pickImage,
                         child: Container(
                           height: 50,
                           width: 100,
                           decoration: BoxDecoration(
-                              color: Colors.purple.shade200,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          child: Icon(Icons.upload_file),
+                            color: Theme.of(context).primaryColorLight,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: const Icon(Icons.upload_file,
+                              color: Colors.white),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       controller.images.isNotEmpty
                           ? ImageGrid(
                               images: controller.images,
                               onRemove: controller.removeImage,
                             )
                           : const Center(child: Text('No images selected')),
-//buttons
+// Buttons
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -144,10 +164,12 @@ class FormScreen extends StatelessWidget {
                 onPressed: controller.submitForm,
                 borderRadius: 8.0,
                 color: Colors.blue.shade300,
+                // color: Theme.of(context).primaryColor,
                 labelStyle: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
             ],

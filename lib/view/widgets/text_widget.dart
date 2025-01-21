@@ -14,12 +14,16 @@ class TextWidget extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-              color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+              color: Theme.of(context).textTheme.bodyLarge?.color,
+              fontSize: 18,
+              fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
         Text(
           Sublabel ?? '',
-          style: TextStyle(color: Colors.black, fontSize: 18),
+          style: TextStyle(
+              color: Theme.of(context).textTheme.bodyLarge?.color,
+              fontSize: 18),
         )
       ],
     );

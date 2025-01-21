@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lost_found_task_app/controller/theme_controller.dart';
 import 'dart:io';
 
 import 'package:lost_found_task_app/view/widgets/text_widget.dart';
 import 'package:lottie/lottie.dart';
+import 'package:get/get.dart';
 
 class ConfirmationScreen extends StatelessWidget {
   final Map<String, dynamic> formData;
@@ -12,29 +14,52 @@ class ConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeController themeController = Get.find<ThemeController>();
+
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Confirmation'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              themeController.isDarkMode.value
+                  ? Icons.dark_mode
+                  : Icons.light_mode,
+            ),
+            onPressed: () => themeController.toggleTheme(),
+          ),
+        ],
+      ),
       body: Container(
-        color: Colors.grey[200],
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Center(
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 20),
             decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(14))),
+              color: Theme.of(context).cardColor,
+              borderRadius: const BorderRadius.all(Radius.circular(14)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
             width: double.infinity,
             height: 600,
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'Lost Data Confirmation',
                   style: TextStyle(
-                      color: const Color(0xff1529e8),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(
@@ -44,7 +69,7 @@ class ConfirmationScreen extends StatelessWidget {
                   width: 200,
                   height: 200,
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: Theme.of(context).colorScheme.background,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Lottie.asset(
@@ -79,9 +104,10 @@ class ConfirmationScreen extends StatelessWidget {
                 Text(
                   'Images:',
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 formData['images'] != null && formData['images'].isNotEmpty
                     ? Wrap(

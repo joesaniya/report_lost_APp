@@ -15,13 +15,19 @@ class HomeScreen extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Lost and Found App'),
           actions: [
+            /* Switch(
+              value: controller.isDarkMode.value,
+              onChanged: (value) => controller.toggleTheme(),
+              activeColor: Colors.blue,
+              inactiveThumbColor: Colors.grey,
+            ),*/
             IconButton(
               icon: Icon(
                 controller.isDarkMode.value
                     ? Icons.dark_mode
                     : Icons.light_mode,
               ),
-              onPressed: controller.toggleTheme,
+              onPressed: () => controller.toggleTheme(),
             ),
           ],
         ),
