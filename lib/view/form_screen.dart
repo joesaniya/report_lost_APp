@@ -85,11 +85,17 @@ class FormScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 20),
                       // Image picker button
-                      ElevatedButton(
-                        onPressed: controller.pickImage,
-                        child: const Text('Pick Images'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade300,
+
+                      InkWell(
+                        onTap: controller.pickImage,
+                        child: Container(
+                          height: 50,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              color: Colors.purple.shade200,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          child: Icon(Icons.upload_file),
                         ),
                       ),
                       SizedBox(height: 10),
@@ -99,7 +105,32 @@ class FormScreen extends StatelessWidget {
                               onRemove: controller.removeImage,
                             )
                           : const Center(child: Text('No images selected')),
-
+//buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: controller.clearForm,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent,
+                            ),
+                            child: const Text(
+                              'Clear Form',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: controller.refreshForm,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                            ),
+                            child: const Text(
+                              'Refresh Form',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.05),
                     ],

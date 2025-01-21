@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 import 'package:lost_found_task_app/view/widgets/text_widget.dart';
+import 'package:lottie/lottie.dart';
 
 class ConfirmationScreen extends StatelessWidget {
   final Map<String, dynamic> formData;
 
-  // Constructor to accept form data
   const ConfirmationScreen({Key? key, required this.formData})
       : super(key: key);
 
@@ -40,6 +40,19 @@ class ConfirmationScreen extends StatelessWidget {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.02,
                 ),
+                Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Lottie.asset(
+                    'assets/lottie/confirmation.json',
+                    fit: BoxFit.cover,
+                    repeat: true,
+                  ),
+                ),
                 TextWidget(
                   label: 'Name: ',
                   Sublabel: formData['name'],
@@ -60,7 +73,9 @@ class ConfirmationScreen extends StatelessWidget {
                   label: 'Date: ',
                   Sublabel: formData['date'],
                 ),
-                const SizedBox(height: 20),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.01,
+                ),
                 Text(
                   'Images:',
                   style: TextStyle(

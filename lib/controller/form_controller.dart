@@ -84,4 +84,20 @@ class FormController extends GetxController {
           transition: Transition.fadeIn, duration: Duration(seconds: 1));
     }
   }
+
+  void clearForm() {
+    nameController.clear();
+    contactController.clear();
+    descriptionController.clear();
+    locationController.clear();
+    dateController.clear();
+    images.clear();
+    update();
+  }
+
+  void refreshForm() {
+    clearForm();
+    Get.snackbar('Refreshed', 'Form has been refreshed!',
+        snackPosition: SnackPosition.BOTTOM);
+  }
 }
