@@ -1,7 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lost_found_task_app/controller/Login_provider.dart';
 import 'package:lost_found_task_app/controller/signUp_provider.dart';
 import 'package:lost_found_task_app/controller/theme_controller.dart';
+import 'package:lost_found_task_app/view/login_view.dart';
 import 'package:lost_found_task_app/view/widgets/custom_button.dart';
 import 'package:lost_found_task_app/view/widgets/custom_textfield.dart';
 import 'package:provider/provider.dart';
@@ -109,13 +111,40 @@ class SignUpView extends StatelessWidget {
                           fontSize: 15,
                           color: Theme.of(context).textTheme.bodyLarge?.color,
                         ),
-                        children: const [
+                        children: [
                           TextSpan(
                             text: ' Sign In',
                             style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.blue),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        const LoginView(),
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      const begin = Offset(1.0, 0.0);
+                                      const end = Offset.zero;
+                                      const curve = Curves.ease;
+
+                                      var tween = Tween(begin: begin, end: end)
+                                          .chain(CurveTween(curve: curve));
+                                      var offsetAnimation =
+                                          animation.drive(tween);
+
+                                      return SlideTransition(
+                                        position: offsetAnimation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
                           ),
                         ],
                       ),
