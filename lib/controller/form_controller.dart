@@ -1,16 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lost_found_task_app/controller/theme_controller.dart';
 import 'package:lost_found_task_app/view/confirmation_screen.dart';
+import 'package:lost_found_task_app/view/widgets/snackbar_widgets.dart';
 
-class FormController extends GetxController {
-  @override
-  void onInit() {
-    super.onInit();
-     Get.find<ThemeController>().loadThemeFromPreferences();
-  }
+class FormProvider with ChangeNotifier {
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final contactController = TextEditingController();
@@ -18,6 +12,9 @@ class FormController extends GetxController {
   final locationController = TextEditingController();
   final dateController = TextEditingController();
 
+  List<File> images = [];
+
+  /// Validation Methods
   String? validateName(String? value) {
     if (value == null || value.isEmpty) {
       return 'Name is required';
@@ -58,24 +55,24 @@ class FormController extends GetxController {
     return null;
   }
 
-  List<File> images = [];
-
+  /// Image Management
   Future<void> pickImage() async {
     final picker = ImagePicker();
     final pickedFiles = await picker.pickMultiImage();
 
     if (pickedFiles != null && pickedFiles.isNotEmpty) {
       images.addAll(pickedFiles.map((file) => File(file.path)).toList());
-      update();
+      notifyListeners();
     }
   }
 
   void removeImage(int index) {
     images.removeAt(index);
-    update();
+    notifyListeners();
   }
 
-  void submitForm() {
+  /// Form Actions
+  void submitForm(BuildContext context) {
     if (formKey.currentState?.validate() ?? false) {
       Map<String, dynamic> formData = {
         'name': nameController.text,
@@ -86,8 +83,27 @@ class FormController extends GetxController {
         'images': images,
       };
 
-      Get.off(() => ConfirmationScreen(formData: formData),
-          transition: Transition.fadeIn, duration: Duration(seconds: 1));
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              ConfirmationScreen(formData: formData),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.ease;
+
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var offsetAnimation = animation.drive(tween);
+
+            return SlideTransition(
+              position: offsetAnimation,
+              child: child,
+            );
+          },
+        ),
+      );
     }
   }
 
@@ -98,12 +114,11 @@ class FormController extends GetxController {
     locationController.clear();
     dateController.clear();
     images.clear();
-    update();
+    notifyListeners();
   }
 
-  void refreshForm() {
+  void refreshForm(BuildContext context) {
     clearForm();
-    Get.snackbar('Refreshed', 'Form has been refreshed!',
-        snackPosition: SnackPosition.BOTTOM);
+    showAnimatedSnackBar(context, 'Form has been refreshed!');
   }
 }

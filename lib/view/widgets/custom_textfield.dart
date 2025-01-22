@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class CustomTextField extends StatefulWidget {
   final String label;
@@ -22,7 +21,7 @@ class CustomTextField extends StatefulWidget {
     this.suffixIcon,
     this.isDatePicker = false,
     this.onDateSelected,
-    this.backgroundColor = Colors.grey, 
+    this.backgroundColor = Colors.grey,
     this.maxLines = 1,
   });
 
@@ -31,26 +30,16 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  String? selectedDate;
+  bool isAnimated = false;
 
-  Future<void> _pickDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2100),
-    );
-
-    if (picked != null) {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 1), () {
       setState(() {
-        selectedDate = DateFormat('yyyy-MM-dd').format(picked);
+        isAnimated = true;
       });
-      if (widget.onDateSelected != null) {
-        widget.onDateSelected!(selectedDate!);
-      }
-      widget.controller.text =
-          selectedDate!; 
-    }
+    });
   }
 
   @override
@@ -60,28 +49,38 @@ class _CustomTextFieldState extends State<CustomTextField> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.label,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          AnimatedOpacity(
+            opacity: isAnimated ? 1.0 : 0.0,
+            duration: Duration(seconds: 1),
+            child: Text(
+              widget.label,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
           SizedBox(height: 8),
-          TextFormField(
-            controller: widget.controller,
-            keyboardType: widget.inputType, 
-            validator: widget.validator,
-            maxLines: widget.maxLines,
-            decoration: InputDecoration(
-              hintText: widget.hintText,
-              suffixIcon: widget.isDatePicker
-                  ? IconButton(
-                      icon: Icon(Icons.calendar_today),
-                      onPressed: () => _pickDate(context),
-                    )
-                  : (widget.suffixIcon != null
-                      ? Icon(widget.suffixIcon)
-                      : null),
-              fillColor: widget.backgroundColor,
-              filled: true, 
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          AnimatedOpacity(
+            opacity: isAnimated ? 1.0 : 0.0,
+            duration: Duration(seconds: 1),
+            child: TextFormField(
+              controller: widget.controller,
+              keyboardType: widget.inputType,
+              validator: widget.validator,
+              maxLines: widget.maxLines,
+              decoration: InputDecoration(
+                hintText: widget.hintText,
+                suffixIcon: widget.isDatePicker
+                    ? IconButton(
+                        icon: Icon(Icons.calendar_today),
+                        onPressed: () {},
+                      )
+                    : (widget.suffixIcon != null
+                        ? Icon(widget.suffixIcon)
+                        : null),
+                fillColor: widget.backgroundColor,
+                filled: true,
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              ),
             ),
           ),
         ],

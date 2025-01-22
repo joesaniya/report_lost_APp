@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:lost_found_task_app/controller/theme_controller.dart';
+import 'package:lost_found_task_app/view/login_view.dart';
 import 'package:lost_found_task_app/view/widgets/custom_button.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'form_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -10,24 +11,16 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ThemeController>(builder: (controller) {
+    return Consumer<ThemeProvider>(builder: (context, themeProvider, _) {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Lost and Found App'),
           actions: [
-            /* Switch(
-              value: controller.isDarkMode.value,
-              onChanged: (value) => controller.toggleTheme(),
-              activeColor: Colors.blue,
-              inactiveThumbColor: Colors.grey,
-            ),*/
             IconButton(
               icon: Icon(
-                controller.isDarkMode.value
-                    ? Icons.dark_mode
-                    : Icons.light_mode,
+                themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
               ),
-              onPressed: () => controller.toggleTheme(),
+              onPressed: themeProvider.toggleTheme,
             ),
           ],
         ),
@@ -51,6 +44,11 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 20),
               const Text(
                 'Welcome to the Lost and Found App!',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'We Are Searching Your Lost Items',
                 style: TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 20),
@@ -59,15 +57,38 @@ class HomeScreen extends StatelessWidget {
                 child: CustomElevatedButton(
                   width: MediaQuery.of(context).size.width,
                   label: 'Report Lost/Found Item',
-                  onPressed: () => Get.off(() => FormScreen(),
-                      transition: Transition.fadeIn,
-                      duration: Duration(seconds: 1)),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                         
+                            const LoginView(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(1.0, 0.0);
+                          const end = Offset.zero;
+                          const curve = Curves.ease;
+
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+                          var offsetAnimation = animation.drive(tween);
+
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: child,
+                          );
+                        },
+                      ),
+                    );
+                  },
                   borderRadius: 8.0,
                   color: Colors.blue.shade300,
                   labelStyle: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

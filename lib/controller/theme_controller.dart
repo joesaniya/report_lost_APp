@@ -1,25 +1,22 @@
 import 'dart:developer';
-
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ThemeController extends GetxController {
-  var isDarkMode = false.obs;
+class ThemeProvider with ChangeNotifier {
+  bool _isDarkMode = false;
 
-  @override
-  void onInit() {
-    super.onInit();
+  ThemeProvider() {
     loadThemeFromPreferences();
   }
 
-  ThemeMode get theme => isDarkMode.value ? ThemeMode.dark : ThemeMode.light;
+  bool get isDarkMode => _isDarkMode;
+
+  ThemeMode get theme => _isDarkMode ? ThemeMode.dark : ThemeMode.light;
 
   void toggleTheme() async {
-    isDarkMode.value = !isDarkMode.value;
-    Get.changeThemeMode(theme);
-    await _saveThemeToPreferences(
-        isDarkMode.value); // Save the theme preference
+    _isDarkMode = !_isDarkMode;
+    notifyListeners();
+    await _saveThemeToPreferences(_isDarkMode);
   }
 
   Future<void> _saveThemeToPreferences(bool isDark) async {
@@ -29,8 +26,8 @@ class ThemeController extends GetxController {
 
   Future<void> loadThemeFromPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    isDarkMode.value = prefs.getBool('isDarkMode') ?? false;
-    Get.changeThemeMode(theme);
-    log('theme:${isDarkMode.value}');
+    _isDarkMode = prefs.getBool('isDarkMode') ?? false;
+    notifyListeners();
+    log('Theme loaded: $_isDarkMode');
   }
 }

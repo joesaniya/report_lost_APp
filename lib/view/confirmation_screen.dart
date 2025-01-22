@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:lost_found_task_app/controller/theme_controller.dart';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:lost_found_task_app/controller/theme_controller.dart';
+import 'package:provider/provider.dart';
 import 'package:lost_found_task_app/view/widgets/text_widget.dart';
 import 'package:lottie/lottie.dart';
-import 'package:get/get.dart';
 
 class ConfirmationScreen extends StatelessWidget {
   final Map<String, dynamic> formData;
@@ -14,19 +14,18 @@ class ConfirmationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeController themeController = Get.find<ThemeController>();
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Confirmation'),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: Icon(
-              themeController.isDarkMode.value
-                  ? Icons.dark_mode
-                  : Icons.light_mode,
+              themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
             ),
-            onPressed: () => themeController.toggleTheme(),
+            onPressed: themeProvider.toggleTheme,
           ),
         ],
       ),
@@ -116,7 +115,7 @@ class ConfirmationScreen extends StatelessWidget {
                         children: List.generate(
                           formData['images'].length,
                           (index) => Image.file(
-                            formData['images'][index],
+                            formData['images'][index] as File,
                             height: 100,
                             width: 100,
                             fit: BoxFit.cover,

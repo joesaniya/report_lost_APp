@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:lost_found_task_app/controller/form_controller.dart';
 import 'package:lost_found_task_app/controller/theme_controller.dart';
 import 'package:lost_found_task_app/view/widgets/custom_button.dart';
 import 'package:lost_found_task_app/view/widgets/custom_textfield.dart';
 import 'package:lost_found_task_app/view/widgets/image_grid.dart';
+import 'package:provider/provider.dart';
 
 class FormScreen extends StatelessWidget {
   const FormScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<FormController>(builder: (controller) {
-      final ThemeController themeController = Get.find<ThemeController>();
-
+    return Consumer<FormProvider>(builder: (context, controller, _) {
+      final themeController = Provider.of<ThemeProvider>(context);
       return Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
@@ -23,15 +22,12 @@ class FormScreen extends StatelessWidget {
             'Lost Found App',
             style: TextStyle(
               color: Theme.of(context).textTheme.bodyLarge?.color,
-              // color: Theme.of(context).primaryColor,
             ),
           ),
           actions: [
             IconButton(
               icon: Icon(
-                themeController.isDarkMode.value
-                    ? Icons.dark_mode
-                    : Icons.light_mode,
+                themeController.isDarkMode ? Icons.dark_mode : Icons.light_mode,
               ),
               onPressed: () => themeController.toggleTheme(),
             ),
@@ -71,7 +67,7 @@ class FormScreen extends StatelessWidget {
                         hintText: 'Enter your contact info',
                         controller: controller.contactController,
                         validator: controller.validateContact,
-                        inputType: TextInputType.text,
+                        inputType: TextInputType.number,
                         backgroundColor:
                             Theme.of(context).inputDecorationTheme.fillColor,
                       ),
@@ -125,7 +121,6 @@ class FormScreen extends StatelessWidget {
                               onRemove: controller.removeImage,
                             )
                           : const Center(child: Text('No images selected')),
-// Buttons
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -140,7 +135,9 @@ class FormScreen extends StatelessWidget {
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: controller.refreshForm,
+                            onPressed: () {
+                              controller.refreshForm(context);
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
                             ),
@@ -161,10 +158,11 @@ class FormScreen extends StatelessWidget {
               CustomElevatedButton(
                 width: MediaQuery.of(context).size.width,
                 label: 'Submit',
-                onPressed: controller.submitForm,
+                onPressed: () {
+                  controller.submitForm(context);
+                },
                 borderRadius: 8.0,
                 color: Colors.blue.shade300,
-                // color: Theme.of(context).primaryColor,
                 labelStyle: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
